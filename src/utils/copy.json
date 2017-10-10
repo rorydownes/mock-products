@@ -1,0 +1,8 @@
+{
+  "title": "Products",
+  "btnExport": "Export",
+  "btnImport": "Import",
+  "btnAddProduct": "Add Product",
+  "labelItemsPerPage": "Items per page",
+  "txtSearchPlaceholder": "Search..."
+}

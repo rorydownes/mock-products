@@ -1,0 +1,62 @@
+$color-white: #FFF;
+$color-black: #000;
+$color-primary-btn: #157AFB;
+$color-secondary-btn: $color-white;
+
+body {
+  background-color: $color-black;
+}
+
+.app {
+  margin: auto;
+  width: 60%;
+  background-color: $color-white;
+  display: block;
+  height: 500px;
+}
+
+.header {
+  width: 100%;
+  font-size: 24px;
+}
+
+.actionButtons {
+  float: right;
+}
+
+.actionButtons .btn {
+  margin: 0 10px;
+}
+
+%btn {
+  padding: 20px 30px;
+  background: none;
+}
+
+.primaryBtn {
+  @extend %btn;
+  background-color: $color-primary-btn;
+}
+
+.secondaryBtn {
+  @extend %btn;
+  background-color: $color-secondary-btn;
+}
+
+.searchRow {
+  margin: 40px 0;
+}
+
+.searchBox {
+  height: 30px;
+  width: 250px;
+}
+
+
+.paginationLeft {
+  float: left;
+}
+
+.paginationRight {
+  float: right;
+}
