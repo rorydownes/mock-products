@@ -42,12 +42,13 @@ class ProductsContainer extends Component {
         const {
             products,
             renderedProducts,
-            handleCheckRow
+            handleCheckRow,
+            start,
+            pageSize
         } = this.props;
 
         const { headerRowChecked } = this.state;
-
-        const productsList = renderedProducts.map(productID => {
+        const productsList = renderedProducts.slice(start, pageSize + start).map(productID => {
             const product = products[productID];
             const isEditable = product.isChecked;
             const key = `product-${productID}`;
@@ -109,8 +110,10 @@ class ProductsContainer extends Component {
 const mapDispatchToProps = actions;
 
 const mapStateToProps = state => ({
-        products: state.products,
-        renderedProducts: state.renderedProducts
+    products: state.products,
+    renderedProducts: state.renderedProducts,
+    start: state.start,
+    pageSize: state.pageSize
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsContainer);

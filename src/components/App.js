@@ -51,8 +51,6 @@ class App extends Component {
 
         const {
             searchQuery,
-            products,
-            renderedProducts
         } = this.props;
 
         const {
@@ -76,16 +74,9 @@ class App extends Component {
                 </div>
                 <div className={styles.productTable}>
                     <ProductsContainer
-                        pageSize={pageSize}
-                        currentPage={currentPage}
                         handleCheckRow={this.handleCheckRow}
                     />
-                    <PaginationControls
-                        products={products}
-                        renderedProducts={renderedProducts}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                    />
+                    <PaginationControls />
                 </div>
             </div>
         );
@@ -96,8 +87,6 @@ const mapDispatchToProps = actions;
 
 const mapStateToProps = state => {
     return {
-        renderedProducts: state.renderedProducts,
-        products: state.products,
         searchQuery: state.searchQuery
     };
 };

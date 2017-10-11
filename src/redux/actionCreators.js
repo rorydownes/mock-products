@@ -9,7 +9,9 @@ const actions = {
 
     search: (query) => ({ type: actionConstants.search, query }),
     sortBy: (fieldName) => ({ type: actionConstants.changeSortField, fieldName }),
-    selectAll: () => ({ type: actionConstants.selectAllRows })
+    selectAll: () => ({ type: actionConstants.selectAllRows }),
+    changePageSize: (pageSize) => ({ type: actionConstants.changePageSize, pageSize }),
+    changePageNumber: (pageNumber) => ({ type: actionConstants.changePageNumber, pageNumber }),
 };
 
 export default actions;

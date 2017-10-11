@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import styles from './App.scss';
 import copy from '../utils/copy.json';
 import { PAGE_SIZES } from '../utils/constants';
+
+import actions from '../redux/actionCreators';
 
 const getPageOptions = pageCount => {
     let options = [];
@@ -11,25 +14,46 @@ const getPageOptions = pageCount => {
     return options;
 };
 
-const PaginationControls = ({ renderedProducts, pageSize }) => {
+const PaginationControls = ({ renderedProducts, pageSize, changePageSize, start, changePageNumber }) => {
     const pageCount = renderedProducts.length/pageSize;
     return (
         <div className={styles.paginationRow}>
             <span className={styles.paginationLeft}>
                 <span>{copy.labelItemsPerPage}</span>
-                <select name="itemsPerPage" id="itemsPerPage">
+                <select
+                    name="itemsPerPage"
+                    id="itemsPerPage"
+                    value={pageSize}
+                    onChange={e => changePageSize(e.target.value)}
+                >
                     {PAGE_SIZES.map(option => <option value={option} key={`pagesize-${option}`}>{option}</option>)}
                 </select>
             </span>
             <span className={styles.paginationRight}>
-                <button>Previous</button>
-                <select name="goToPage" id="goToPage">
+                <button onClick={() => changePageNumber((start/pageSize) - 1)}>Previous</button>
+                <select
+                    name="goToPage"
+                    id="goToPage"
+                    value={start/pageSize}
+                    onChange={(e) => changePageNumber(e.target.value)}
+                >
                     {getPageOptions(pageCount)}
                 </select>
-                <button>Next</button>
+                <button onClick={() => changePageNumber((start/pageSize) + 1)}>Next</button>
             </span>
         </div>
     );
 };
 
-export default PaginationControls;
+const mapDispatchToProps = ({
+    changePageSize: actions.changePageSize,
+    changePageNumber: actions.changePageNumber
+});
+
+const mapStateToProps = ({ renderedProducts, pageSize, start }) => ({
+    renderedProducts,
+    pageSize,
+    start
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaginationControls);

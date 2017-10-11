@@ -4,5 +4,7 @@
   "selectAllRows": "SELECT_ALL_ROWS",
   "selectRow": "SELECT_ROW",
   "search": "START_SEARCH_QUERY",
-  "changeSortField": "SORT_BY_FIELD_NAME"
+  "changeSortField": "SORT_BY_FIELD_NAME",
+  "changePageSize": "CHANGE_PAGE_SIZE",
+  "changePageNumber": "CHANGE_PAGE_NUMBER"
 }
