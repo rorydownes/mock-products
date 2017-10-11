@@ -1,5 +1,5 @@
 $color-white: #FFF;
-$color-black: #000;
+$color-black: #333;
 $color-primary-btn: #157AFB;
 $color-secondary-btn: $color-white;
 
@@ -12,7 +12,6 @@ body {
   width: 60%;
   background-color: $color-white;
   display: block;
-  height: 500px;
 }
 
 .header {
@@ -50,11 +49,6 @@ body {
 .searchBox {
   height: 30px;
   width: 250px;
-}
-
-
-.paginationLeft {
-  float: left;
 }
 
 .paginationRight {

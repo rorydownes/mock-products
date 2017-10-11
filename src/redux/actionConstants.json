@@ -1,0 +1,8 @@
+{
+  "startFetchProducts": "START_FETCHING_PRODUCTS",
+  "fetchProducts": "FETCH_PRODUCTS",
+  "selectAllRows": "SELECT_ALL_ROWS",
+  "selectRow": "SELECT_ROW",
+  "search": "START_SEARCH_QUERY",
+  "changeSortField": "SORT_BY_FIELD_NAME"
+}

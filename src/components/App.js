@@ -9,14 +9,11 @@ import { PAGE_SIZES } from '../utils/constants';
 import copy from '../utils/copy.json';
 import styles from './App.scss';
 
-const initialState = props => ({
-    products: {},
-    orderedProducts: [],
-    pageSize: PAGE_SIZES[0]
-});
+import { connect } from 'react-redux';
+import actions from '../redux/actionCreators';
 
-const productState = () => ({
-    isChecked: false
+const initialState = props => ({
+    pageSize: PAGE_SIZES[0]
 });
 
 class App extends Component {
@@ -25,6 +22,7 @@ class App extends Component {
         this.state = initialState(props);
 
         this.handleCheckRow = this.handleCheckRow.bind(this);
+        this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
     }
 
     componentDidMount() {
@@ -32,43 +30,35 @@ class App extends Component {
     }
 
     fetchProducts() {
+        const { fetchProducts, startFetchingProducts } = this.props;
+        startFetchingProducts();
         // services.fetchProducts
         Promise.resolve(products).then(products => {
-            let productIds = [];
-            const productHashMap = products.reduce((acc, cur) => {
-                productIds.push(cur.id);
-                return Object.assign(acc, {[cur.id]: ({...cur, ...productState()})});
-            }, {});
-            console.log('Fetched: ', {
-                products: productHashMap,
-                orderedProducts: productIds
-            });
-            this.setState({
-                products: productHashMap,
-                orderedProducts: productIds
-            });
+            fetchProducts(products);
         });
     }
 
     handleCheckRow(productID) {
-        this.setState(state => {
-            debugger;
-            const product = state.products[productID];
-            const updatedProduct = {[productID]: Object.assign({}, product, {isChecked: !product.isChecked})};
-            let newProdState = {products: {...state.products, updatedProduct}};
-            return newProdState;
-        });
+        this.props.selectRow(productID);
+    }
+
+    handleSearchTextChange(e) {
+        this.props.search(e.target.value);
     }
 
     render() {
+        console.log('App render', this.props);
+
         const {
+            searchQuery,
             products,
-            orderedProducts,
+            renderedProducts
+        } = this.props;
+
+        const {
             pageSize,
             currentPage
         } = this.state;
-
-        console.log(this.state);
 
         return (
             <div className={styles.app}>
@@ -76,19 +66,23 @@ class App extends Component {
                     <Header />
                 </div>
                 <div className={styles.searchRow}>
-                    <input type="text" className={styles.searchBox} placeholder={copy.txtSearchPlaceholder}/>
+                    <input
+                        type="text"
+                        className={styles.searchBox}
+                        placeholder={copy.txtSearchPlaceholder}
+                        value={searchQuery}
+                        onChange={this.handleSearchTextChange}
+                    />
                 </div>
                 <div className={styles.productTable}>
                     <ProductsContainer
-                        products={products}
-                        orderedProducts={orderedProducts}
                         pageSize={pageSize}
                         currentPage={currentPage}
                         handleCheckRow={this.handleCheckRow}
                     />
                     <PaginationControls
                         products={products}
-                        orderedProducts={orderedProducts}
+                        renderedProducts={renderedProducts}
                         pageSize={pageSize}
                         currentPage={currentPage}
                     />
@@ -98,4 +92,15 @@ class App extends Component {
     }
 }
 
-export default App;
+const mapDispatchToProps = actions;
+
+const mapStateToProps = state => {
+    return {
+        renderedProducts: state.renderedProducts,
+        products: state.products,
+        searchQuery: state.searchQuery
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

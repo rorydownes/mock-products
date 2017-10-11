@@ -4,5 +4,10 @@
   "btnImport": "Import",
   "btnAddProduct": "Add Product",
   "labelItemsPerPage": "Items per page",
-  "txtSearchPlaceholder": "Search..."
+  "txtSearchPlaceholder": "Search...",
+
+  "fieldHeaderName": "Name",
+  "fieldHeaderType": "Type",
+  "fieldHeaderPrice": "Price",
+  "fieldHeaderInventory": "Inventory"
 }

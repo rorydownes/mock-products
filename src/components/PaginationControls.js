@@ -11,8 +11,8 @@ const getPageOptions = pageCount => {
     return options;
 };
 
-const PaginationControls = ({ orderedProducts, pageSize }) => {
-    const pageCount = orderedProducts.length/pageSize;
+const PaginationControls = ({ renderedProducts, pageSize }) => {
+    const pageCount = renderedProducts.length/pageSize;
     return (
         <div className={styles.paginationRow}>
             <span className={styles.paginationLeft}>
