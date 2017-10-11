@@ -23,7 +23,6 @@ const matchesSearch = (data, query) => data.toString().toLowerCase().indexOf(que
 
 const validateProduct = (product) => {
     let errors = {};
-
     if (!product.name) {
         errors['name'] = 'Required';
     }

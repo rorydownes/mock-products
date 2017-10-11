@@ -95,6 +95,7 @@ class ProductsContainer extends Component {
                             ? <EditableField
                                 productID={productID}
                                 fieldName="inventory"
+                                isNumeric
                                 fieldValue={product.inventory}
                                 uniqueKey={key}
                                 onChange={this.onChangeField}
