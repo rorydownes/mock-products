@@ -21,6 +21,20 @@ const productState = () => ({
     validationErrors: {}
 });
 
+const deSelectRow = (product) => {
+    let validationErrors = {...product}.validationErrors;
+    let isNowChecked = product.isChecked;
+    if (product.isChecked) {
+        validationErrors = validateProduct(product);
+        if (!Object.keys(validationErrors).length) {
+            isNowChecked = !product.isChecked;
+        }
+    } else {
+        isNowChecked = !product.isChecked;
+    }
+    return {...product, isChecked: isNowChecked, validationErrors };
+};
+
 const reducer = (state = initialState, action) => {
     console.log(action);
     switch (action.type) {
@@ -53,19 +67,9 @@ const reducer = (state = initialState, action) => {
 
         case actions.selectRow:
             const product = state.products[action.productID];
-            let validationErrors = {...product}.validationErrors;
-            let isNowChecked = product.isChecked;
-            if (product.isChecked) {
-                validationErrors = validateProduct(product);
-                if (!Object.keys(validationErrors).length) {
-                    isNowChecked = !product.isChecked;
-                }
-            } else {
-                isNowChecked = !product.isChecked;
-            }
             return {...state, products: {
                 ...state.products,
-                [action.productID]: {...product, isChecked: isNowChecked, validationErrors }
+                [action.productID]: deSelectRow(product)
             }};
 
         case actions.selectAllRows:
@@ -73,7 +77,7 @@ const reducer = (state = initialState, action) => {
             let nextProducts = {...state.products};
 
             state.renderedProducts.forEach(productID => {
-                nextProducts[productID] = {...nextProducts[productID], isChecked: isHeaderRowNowChecked}
+                nextProducts[productID] = deSelectRow(nextProducts[productID]);
             });
 
             return {...state, headerRowChecked: isHeaderRowNowChecked, products: nextProducts};
