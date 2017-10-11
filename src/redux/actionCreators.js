@@ -11,6 +11,8 @@ const actions = {
     sortBy: (fieldName) => ({ type: actionConstants.changeSortField, fieldName }),
     changePageSize: (pageSize) => ({ type: actionConstants.changePageSize, pageSize }),
     changePageNumber: (pageNumber) => ({ type: actionConstants.changePageNumber, pageNumber }),
+
+    editField: (productID, fieldName, fieldValue) => ({ type: actionConstants.editField, productID, fieldName, fieldValue})
 };
 
 export default actions;

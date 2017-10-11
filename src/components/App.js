@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import ProductsContainer from './ProductsContainer';
 import PaginationControls from './PaginationControls';
 import Header from './Header';
-// import services from '../services';
-import { products } from "../services/mockData";
+import services from '../services';
+import Spinner from 'react-icons/lib/fa/spinner';
+// import { products } from "../services/mockData";
 
 import copy from '../utils/copy.json';
 import styles from './App.scss';
@@ -20,15 +21,13 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this.props.startFetchingProducts();
         this.fetchProducts();
     }
 
     fetchProducts() {
-        const { fetchProducts, startFetchingProducts } = this.props;
-        startFetchingProducts();
-        // services.fetchProducts
-        Promise.resolve(products).then(products => {
-            fetchProducts(products);
+        services.fetchProducts().then(products => {
+            this.props.fetchProducts(products);
         });
     }
 
@@ -41,10 +40,13 @@ class App extends Component {
     }
 
     render() {
-        const {
-            searchQuery,
-        } = this.props;
-
+        if (this.props.isFetching) {
+            return (
+                <div className={styles.spinnerContainer}>
+                    <Spinner className={styles.spinner} />
+                </div>
+            );
+        }
         return (
             <div className={styles.app}>
                 <div className={styles.header}>
@@ -55,7 +57,7 @@ class App extends Component {
                         type="text"
                         className={styles.searchBox}
                         placeholder={copy.txtSearchPlaceholder}
-                        value={searchQuery}
+                        value={this.props.searchQuery}
                         onChange={this.handleSearchTextChange}
                     />
                 </div>
@@ -74,6 +76,7 @@ const mapDispatchToProps = actions;
 
 const mapStateToProps = state => {
     return {
+        isFetching: state.isFetching,
         searchQuery: state.searchQuery
     };
 };

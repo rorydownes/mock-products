@@ -46,3 +46,11 @@
   font-size: 18px;
   text-align: center;
 }
+
+.inputError {
+  border: 1px solid $color-crimson;
+}
+
+.labelError {
+  color: $color-crimson;
+}

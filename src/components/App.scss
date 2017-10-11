@@ -5,11 +5,32 @@ body {
 }
 
 .app {
+  display: block;
   margin: auto;
   width: 60%;
   background-color: $color-white;
-  display: block;
   padding: 40px;
+}
+
+.spinnerContainer {
+  background-color: $color-white;
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.spinner {
+  align-self: center;
+  margin: 200px;
+  height: 100px;
+  width: 100px;
+  animation: spinner 1s linear infinite;
 }
 
 .header {

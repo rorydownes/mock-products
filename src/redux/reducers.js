@@ -1,5 +1,6 @@
 import actions from './actionConstants.json';
 import { PAGE_SIZES } from '../utils/constants';
+import {sortRenderedProducts, matchesSearch, validateProduct} from "../utils/utils";
 
 const initialState = {
     isFetching: false,
@@ -10,35 +11,15 @@ const initialState = {
     start: 0,
     pageSize: PAGE_SIZES[0],
     sortField: "",
-    sortDescending: true
+    sortDescending: true,
+    flaggedForSave: []
 };
 
 const productState = () => ({
-    isChecked: false
+    isChecked: false,
+    hasPendingChanges: false,
+    validationErrors: {}
 });
-
-const sortRenderedProducts = (products, renderedProducts, sortField, reverseSorted) => {
-    const sorted = renderedProducts.sort((a, b) => {
-        let sortValueA = products[a][sortField];
-        let sortValueB = products[b][sortField];
-
-        if (typeof sortValueA === 'string' || typeof sortValueB === 'string') {
-            sortValueA = sortValueA.toString().toLowerCase();
-            sortValueB = sortValueB.toString().toLowerCase();
-        }
-
-        if (sortValueA < sortValueB) {
-            return 1;
-        }
-        if (sortValueA > sortValueB) {
-            return -1;
-        }
-        return 0;
-    });
-    return reverseSorted ? sorted.reverse() : sorted;
-};
-
-const matchesSearch = (data, query) => data.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1;
 
 const reducer = (state = initialState, action) => {
     console.log(action);
@@ -72,17 +53,30 @@ const reducer = (state = initialState, action) => {
 
         case actions.selectRow:
             const product = state.products[action.productID];
-            return {...state, products: {...state.products, [action.productID]: {...product, isChecked: !product.isChecked}}};
+            let validationErrors = {...product}.validationErrors;
+            let isNowChecked = product.isChecked;
+            if (product.isChecked) {
+                validationErrors = validateProduct(product);
+                if (!Object.keys(validationErrors).length) {
+                    isNowChecked = !product.isChecked;
+                }
+            } else {
+                isNowChecked = !product.isChecked;
+            }
+            return {...state, products: {
+                ...state.products,
+                [action.productID]: {...product, isChecked: isNowChecked, validationErrors }
+            }};
 
         case actions.selectAllRows:
             const isHeaderRowNowChecked = !state.headerRowChecked;
-            let newProducts = {...state.products};
+            let nextProducts = {...state.products};
 
             state.renderedProducts.forEach(productID => {
-                newProducts[productID] = {...newProducts[productID], isChecked: isHeaderRowNowChecked}
+                nextProducts[productID] = {...nextProducts[productID], isChecked: isHeaderRowNowChecked}
             });
 
-            return {...state, headerRowChecked: isHeaderRowNowChecked, products: newProducts};
+            return {...state, headerRowChecked: isHeaderRowNowChecked, products: nextProducts};
 
         case actions.changePageSize:
             return {...state, pageSize: parseInt(action.pageSize, 10), start: initialState.start};
@@ -104,6 +98,14 @@ const reducer = (state = initialState, action) => {
             }
             return nextState;
 
+        case actions.editField:
+            let editedProducts = {...state.products};
+            editedProducts[action.productID] = {
+                ...editedProducts[action.productID],
+                [action.fieldName]: action.fieldValue,
+                hasPendingChanges: true
+            };
+            return {...state, products: editedProducts};
         default:
             return state;
     }

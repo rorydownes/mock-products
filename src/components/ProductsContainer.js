@@ -9,15 +9,19 @@ import ArrowDown from 'react-icons/lib/md/arrow-drop-down';
 
 import actions from '../redux/actionCreators';
 
-const editableField = (productID, fieldName, fieldValue, key, onChange) => {
+// Needs to be refactored
+const editableField = (productID, fieldName, fieldValue, isNumeric, key, onChange, validationError) => {
     return (
-        <input
-            type="text"
-            className={styles.editableRowInput}
-            name={`${key}-${fieldName}`}
-            value={fieldValue}
-            onChange={e => onChange(productID, 'name', e.target.value)}
-        />
+        <span>
+            <input
+                type={isNumeric ? "number" : "text"}
+                className={classnames(styles.editableRowInput, {[styles.inputError]: !!validationError })}
+                name={`${key}-${fieldName}`}
+                value={fieldValue}
+                onChange={e => onChange(productID, fieldName, isNumeric ? parseFloat(e.target.value) : e.target.value)}
+            />
+            <span className={classnames({[styles.labelError]: !!validationError })}>{validationError}</span>
+        </span>
     );
 };
 
@@ -44,7 +48,7 @@ class ProductsContainer extends Component {
     }
 
     onChangeField(productID, fieldName, fieldValue) {
-        console.log(productID, fieldName, fieldValue);
+        this.props.editField(productID, fieldName, fieldValue);
     }
 
     onSortBy(fieldName) {
@@ -63,8 +67,6 @@ class ProductsContainer extends Component {
             headerRowChecked
         } = this.props;
 
-        console.log('Sort: ', sortField, sortDescending);
-
         const productsList = renderedProducts.slice(start, pageSize + start).map(productID => {
             const product = products[productID];
             const isEditable = product.isChecked;
@@ -82,30 +84,28 @@ class ProductsContainer extends Component {
                         <img src={product.thumbnail} alt="" />
                         <span>{
                             (isEditable)
-                                ? editableField(productID, 'name', product.name, key, this.onChangeField)
+                                ? editableField(productID, 'name', product.name, false, key, this.onChangeField, product.validationErrors.name)
                                 : product.name
                         }</span>
                     </span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'type', product.type, key, this.onChangeField)
+                            ? editableField(productID, 'type', product.type, false, key, this.onChangeField, product.validationErrors.type)
                             : product.type
                     }</span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'price', product.price, key, this.onChangeField)
-                            : product.price
+                            ? editableField(productID, 'price', product.price, true, key, this.onChangeField, product.validationErrors.price)
+                            : `$${parseFloat(product.price).toFixed(2)}`
                     }</span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'inventory', product.inventory, key, this.onChangeField)
+                            ? editableField(productID, 'inventory', product.inventory, true, key, this.onChangeField, product.validationErrors.inventory)
                             : product.inventory
                     }</span>
                 </div>
             );
         });
-
-        console.log(productsList);
 
         return (
             <div className={styles.container}>

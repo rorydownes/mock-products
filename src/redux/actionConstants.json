@@ -6,5 +6,6 @@
   "search": "START_SEARCH_QUERY",
   "changeSortField": "SORT_BY_FIELD_NAME",
   "changePageSize": "CHANGE_PAGE_SIZE",
-  "changePageNumber": "CHANGE_PAGE_NUMBER"
+  "changePageNumber": "CHANGE_PAGE_NUMBER",
+  "editField": "EDIT_FIELD"
 }
