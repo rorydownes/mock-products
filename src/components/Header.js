@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './App.scss';
+import styles from './Header.scss';
 import copy from '../utils/copy.json';
 
 const PageTitle = () => {
@@ -18,7 +18,7 @@ const ActionButtons = () => {
 
 const Header = props => {
     return (
-        <div>
+        <div className={styles.header}>
             <PageTitle {...props} />
             <ActionButtons {...props} />
         </div>

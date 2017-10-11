@@ -49,9 +49,7 @@ class App extends Component {
         }
         return (
             <div className={styles.app}>
-                <div className={styles.header}>
-                    <Header />
-                </div>
+                <Header />
                 <div className={styles.searchRow}>
                     <input
                         type="text"

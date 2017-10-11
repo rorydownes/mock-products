@@ -4,36 +4,10 @@ import styles from './ProductsContainer.scss';
 import copy from '../utils/copy.json';
 import classnames from 'classnames';
 
-import ArrowUp from 'react-icons/lib/md/arrow-drop-up';
-import ArrowDown from 'react-icons/lib/md/arrow-drop-down';
-
 import actions from '../redux/actionCreators';
 
-// Needs to be refactored
-const editableField = (productID, fieldName, fieldValue, isNumeric, key, onChange, validationError) => {
-    return (
-        <span>
-            <input
-                type={isNumeric ? "number" : "text"}
-                className={classnames(styles.editableRowInput, {[styles.inputError]: !!validationError })}
-                name={`${key}-${fieldName}`}
-                value={fieldValue}
-                onChange={e => onChange(productID, fieldName, isNumeric ? parseFloat(e.target.value) : e.target.value)}
-            />
-            <span className={classnames({[styles.labelError]: !!validationError })}>{validationError}</span>
-        </span>
-    );
-};
-
-const getSortArrow = (fieldName, sortField, isDescending) => {
-    if (!sortField) {
-        return <ArrowDown/>;
-    }
-
-    if (sortField === fieldName) {
-        return (isDescending) ? <ArrowDown/> : <ArrowUp/>;
-    }
-};
+import EditableField from './EditableField';
+import SortArrow from './SortArrow';
 
 class ProductsContainer extends Component {
     constructor(props) {
@@ -84,24 +58,48 @@ class ProductsContainer extends Component {
                         <img src={product.thumbnail} alt="" />
                         <span>{
                             (isEditable)
-                                ? editableField(productID, 'name', product.name, false, key, this.onChangeField, product.validationErrors.name)
-                                : product.name
+                                ? <EditableField
+                                    productID={productID}
+                                    fieldName="name"
+                                    fieldValue={product.name}
+                                    uniqueKey={key}
+                                    onChange={this.onChangeField}
+                                    validationError={product.validationErrors.name}
+                                /> : product.name
                         }</span>
                     </span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'type', product.type, false, key, this.onChangeField, product.validationErrors.type)
-                            : product.type
+                            ? <EditableField
+                                productID={productID}
+                                fieldName="type"
+                                fieldValue={product.type}
+                                uniqueKey={key}
+                                onChange={this.onChangeField}
+                                validationError={product.validationErrors.type}
+                            /> : product.type
                     }</span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'price', product.price, true, key, this.onChangeField, product.validationErrors.price)
-                            : `$${parseFloat(product.price).toFixed(2)}`
+                            ? <EditableField
+                                productID={productID}
+                                fieldName="price"
+                                fieldValue={product.price}
+                                uniqueKey={key}
+                                onChange={this.onChangeField}
+                                validationError={product.validationErrors.price}
+                            /> : `$${parseFloat(product.price).toFixed(2)}`
                     }</span>
                     <span className={styles.column20}>{
                         (isEditable)
-                            ? editableField(productID, 'inventory', product.inventory, true, key, this.onChangeField, product.validationErrors.inventory)
-                            : product.inventory
+                            ? <EditableField
+                                productID={productID}
+                                fieldName="inventory"
+                                fieldValue={product.inventory}
+                                uniqueKey={key}
+                                onChange={this.onChangeField}
+                                validationError={product.validationErrors.inventory}
+                            /> : product.inventory
                     }</span>
                 </div>
             );
@@ -118,19 +116,19 @@ class ProductsContainer extends Component {
                     />
                     <span className={styles.column35} onClick={this.onSortBy.bind(this, 'name')}>
                         {copy.fieldHeaderName}
-                        {getSortArrow('name', sortField, sortDescending)}
+                        <SortArrow fieldName="name" sortField={sortField} isDescending={sortDescending} />
                     </span>
                     <span className={styles.column20} onClick={this.onSortBy.bind(this, 'type')}>
                         {copy.fieldHeaderType}
-                        {getSortArrow('type', sortField, sortDescending)}
+                        <SortArrow fieldName="type" sortField={sortField} isDescending={sortDescending} />
                     </span>
                     <span className={styles.column20} onClick={this.onSortBy.bind(this, 'price')}>
                         {copy.fieldHeaderPrice}
-                        {getSortArrow('price', sortField, sortDescending)}
+                        <SortArrow fieldName="price" sortField={sortField} isDescending={sortDescending} />
                     </span>
                     <span className={styles.column20} onClick={this.onSortBy.bind(this, 'inventory')}>
                         {copy.fieldHeaderInventory}
-                        {getSortArrow('inventory', sortField, sortDescending)}
+                        <SortArrow fieldName="inventory" sortField={sortField} isDescending={sortDescending} />
                     </span>
                 </div>
                 {productsList.length ? productsList : <div className={styles.noResultsFound}>{copy.noResultsFound}</div>}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styles from './App.scss';
+import styles from './PaginationControls.scss';
 import copy from '../utils/copy.json';
 import { PAGE_SIZES } from '../utils/constants';
 
@@ -20,8 +20,8 @@ const PaginationControls = ({ renderedProducts, pageSize, changePageSize, start,
     const hasNextPage = (renderedProducts.length - start)/pageSize > 1;
 
     return (
-        <div className={styles.paginationRow}>
-            <span className={styles.paginationLeft}>
+        <div>
+            <span>
                 <span>{copy.labelItemsPerPage}</span>
                 <select
                     name="itemsPerPage"

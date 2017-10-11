@@ -1,0 +1,18 @@
+@import '../utils/variables';
+@import '../utils/buttons';
+
+.header {
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.actionButtons {
+  float: right;
+}
+
+.actionButtons button {
+  margin: 0 5px;
+}

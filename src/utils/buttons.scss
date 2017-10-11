@@ -1,0 +1,22 @@
+@import '../utils/variables';
+
+%btn {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  max-height: 50px;
+}
+
+.primaryBtn {
+  @extend %btn;
+  color: $color-white;
+  background-color: $color-primary-btn;
+}
+
+.secondaryBtn {
+  @extend %btn;
+  background-color: $color-secondary-btn;
+  border: 1px solid $color-gray;
+}
