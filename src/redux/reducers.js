@@ -17,6 +17,27 @@ const productState = () => ({
     isChecked: false
 });
 
+const sortRenderedProducts = (products, renderedProducts, sortField, reverseSorted) => {
+    const sorted = renderedProducts.sort((a, b) => {
+        let sortValueA = products[a][sortField];
+        let sortValueB = products[b][sortField];
+
+        if (typeof sortValueA === 'string' || typeof sortValueB === 'string') {
+            sortValueA = sortValueA.toString().toLowerCase();
+            sortValueB = sortValueB.toString().toLowerCase();
+        }
+
+        if (sortValueA < sortValueB) {
+            return 1;
+        }
+        if (sortValueA > sortValueB) {
+            return -1;
+        }
+        return 0;
+    });
+    return reverseSorted ? sorted.reverse() : sorted;
+};
+
 const matchesSearch = (data, query) => data.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1;
 
 const reducer = (state = initialState, action) => {
@@ -28,7 +49,15 @@ const reducer = (state = initialState, action) => {
                 return (products[cur] && products[cur].name && products[cur].price
                     && (matchesSearch(products[cur].name, action.query) || matchesSearch(products[cur].price, action.query)));
             });
-            return {...state, searchQuery: action.query, renderedProducts, start: initialState.start};
+
+            renderedProducts = sortRenderedProducts(state.products, renderedProducts, state.sortField, !state.sortDescending);
+
+            return {
+                ...state,
+                searchQuery: action.query,
+                renderedProducts: renderedProducts,
+                start: initialState.start
+            };
 
         case actions.fetchProducts:
             let productIds = [];
@@ -69,28 +98,12 @@ const reducer = (state = initialState, action) => {
                 nextState = {...state, sortField: action.fieldName};
             }
             if (nextState.sortField !== state.sortField) {
-                let sortedRenderedProducts = state.renderedProducts.sort((a, b) => {
-                    let sortValueA = state.products[a][nextState.sortField];
-                    let sortValueB = state.products[b][nextState.sortField];
-
-                    if (typeof sortValueA === 'string' || typeof SortValueB === 'string') {
-                        sortValueA = sortValueA.toString().toLowerCase();
-                        sortValueB = sortValueB.toString().toLowerCase();
-                    }
-
-                    if (sortValueA < sortValueB) {
-                        return 1;
-                    }
-                    if (sortValueA > sortValueB) {
-                        return -1;
-                    }
-                    return 0;
-                });
-                nextState = {...nextState, renderedProducts: sortedRenderedProducts};
+                nextState = {...nextState, renderedProducts: sortRenderedProducts(state.products, state.renderedProducts, nextState.sortField)};
             } else if (nextState.sortDescending !== state.sortDescending) {
                 nextState = {...nextState, renderedProducts: [...state.renderedProducts].reverse()};
             }
             return nextState;
+
         default:
             return state;
     }
