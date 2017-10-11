@@ -1,6 +1,7 @@
 import actions from './actionConstants.json';
 import { PAGE_SIZES } from '../utils/constants';
 import {sortRenderedProducts, matchesSearch, validateProduct} from "../utils/utils";
+import services from '../services';
 
 const initialState = {
     isFetching: false,
@@ -21,18 +22,21 @@ const productState = () => ({
     validationErrors: {}
 });
 
-const deSelectRow = (product) => {
+const deSelectRow = (product, allChecked) => {
     let validationErrors = {...product}.validationErrors;
     let isNowChecked = product.isChecked;
     if (product.isChecked) {
         validationErrors = validateProduct(product);
         if (!Object.keys(validationErrors).length) {
-            isNowChecked = !product.isChecked;
+            isNowChecked = allChecked || !product.isChecked;
         }
     } else {
-        isNowChecked = !product.isChecked;
+        isNowChecked = allChecked || !product.isChecked;
     }
-    return {...product, isChecked: isNowChecked, validationErrors };
+    if (!isNowChecked && product.hasPendingChanges) {
+        services.saveProduct(product);
+    }
+    return {...product, isChecked: isNowChecked, validationErrors, hasPendingChanges: false };
 };
 
 const reducer = (state = initialState, action) => {
@@ -77,7 +81,7 @@ const reducer = (state = initialState, action) => {
             let nextProducts = {...state.products};
 
             state.renderedProducts.forEach(productID => {
-                nextProducts[productID] = deSelectRow(nextProducts[productID]);
+                nextProducts[productID] = deSelectRow(nextProducts[productID], isHeaderRowNowChecked);
             });
 
             return {...state, headerRowChecked: isHeaderRowNowChecked, products: nextProducts};
