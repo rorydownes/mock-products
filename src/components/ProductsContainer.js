@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import styles from './ProductsContainer.scss';
 import copy from '../utils/copy.json';
+import classnames from 'classnames';
 
 import ArrowUp from 'react-icons/lib/md/arrow-drop-up';
 import ArrowDown from 'react-icons/lib/md/arrow-drop-down';
@@ -34,18 +35,12 @@ class ProductsContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            headerRowChecked: false
-        };
-
         this.onCheckHeaderRow = this.onCheckHeaderRow.bind(this);
         this.onChangeField = this.onChangeField.bind(this);
     }
 
     onCheckHeaderRow() {
-        this.setState(state => ({
-            headerRowChecked: !state.headerRowChecked
-        }));
+        this.props.selectAllRows();
     }
 
     onChangeField(productID, fieldName, fieldValue) {
@@ -64,16 +59,19 @@ class ProductsContainer extends Component {
             start,
             pageSize,
             sortField,
-            sortDescending
+            sortDescending,
+            headerRowChecked
         } = this.props;
 
-        const { headerRowChecked } = this.state;
+        console.log('Sort: ', sortField, sortDescending);
+
         const productsList = renderedProducts.slice(start, pageSize + start).map(productID => {
             const product = products[productID];
             const isEditable = product.isChecked;
             const key = `product-${productID}`;
+            const rowClassName = classnames(styles.productRow, {[styles.checkedRow]: isEditable});
             return (
-                <div className={styles.productRow} key={key}>
+                <div className={rowClassName} key={key}>
                     <input
                         type="checkbox"
                         className={styles.column5}
@@ -107,6 +105,8 @@ class ProductsContainer extends Component {
             );
         });
 
+        console.log(productsList);
+
         return (
             <div className={styles.container}>
                 <div className={styles.headerRow}>
@@ -133,7 +133,7 @@ class ProductsContainer extends Component {
                         {getSortArrow('inventory', sortField, sortDescending)}
                     </span>
                 </div>
-                {productsList}
+                {productsList.length ? productsList : <div className={styles.noResultsFound}>{copy.noResultsFound}</div>}
             </div>
         );
     }
@@ -141,13 +141,14 @@ class ProductsContainer extends Component {
 
 const mapDispatchToProps = actions;
 
-const mapStateToProps = ({products, renderedProducts, start, pageSize, sortField, sortDescending}) => ({
+const mapStateToProps = ({ products, renderedProducts, start, pageSize, sortField, sortDescending, headerRowChecked }) => ({
     products,
     renderedProducts,
     start,
     pageSize,
     sortField,
-    sortDescending
+    sortDescending,
+    headerRowChecked
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsContainer);

@@ -9,5 +9,6 @@
   "fieldHeaderName": "Name",
   "fieldHeaderType": "Type",
   "fieldHeaderPrice": "Price",
-  "fieldHeaderInventory": "Inventory"
+  "fieldHeaderInventory": "Inventory",
+  "noResultsFound": "0 results found."
 }

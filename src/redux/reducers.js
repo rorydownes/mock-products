@@ -7,7 +7,6 @@ const initialState = {
     headerRowChecked: false,
     products: {},
     renderedProducts: [],
-    visibleProducts: [],
     start: 0,
     pageSize: PAGE_SIZES[0],
     sortField: "",
@@ -46,6 +45,16 @@ const reducer = (state = initialState, action) => {
             const product = state.products[action.productID];
             return {...state, products: {...state.products, [action.productID]: {...product, isChecked: !product.isChecked}}};
 
+        case actions.selectAllRows:
+            const isHeaderRowNowChecked = !state.headerRowChecked;
+            let newProducts = {...state.products};
+
+            state.renderedProducts.forEach(productID => {
+                newProducts[productID] = {...newProducts[productID], isChecked: isHeaderRowNowChecked}
+            });
+
+            return {...state, headerRowChecked: isHeaderRowNowChecked, products: newProducts};
+
         case actions.changePageSize:
             return {...state, pageSize: parseInt(action.pageSize, 10), start: initialState.start};
 
@@ -53,11 +62,35 @@ const reducer = (state = initialState, action) => {
             return {...state, start: action.pageNumber*state.pageSize};
 
         case actions.changeSortField:
+            let nextState;
             if (state.sortField === action.fieldName) {
-                return {...state, sortDescending: !state.sortDescending}
+                nextState = {...state, sortDescending: !state.sortDescending};
             } else {
-                return {...state, sortField: action.fieldName}
+                nextState = {...state, sortField: action.fieldName};
             }
+            if (nextState.sortField !== state.sortField) {
+                let sortedRenderedProducts = state.renderedProducts.sort((a, b) => {
+                    let sortValueA = state.products[a][nextState.sortField];
+                    let sortValueB = state.products[b][nextState.sortField];
+
+                    if (typeof sortValueA === 'string' || typeof SortValueB === 'string') {
+                        sortValueA = sortValueA.toString().toLowerCase();
+                        sortValueB = sortValueB.toString().toLowerCase();
+                    }
+
+                    if (sortValueA < sortValueB) {
+                        return 1;
+                    }
+                    if (sortValueA > sortValueB) {
+                        return -1;
+                    }
+                    return 0;
+                });
+                nextState = {...nextState, renderedProducts: sortedRenderedProducts};
+            } else if (nextState.sortDescending !== state.sortDescending) {
+                nextState = {...nextState, renderedProducts: [...state.renderedProducts].reverse()};
+            }
+            return nextState;
         default:
             return state;
     }
