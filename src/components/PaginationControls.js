@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import styles from './App.scss';
 import copy from '../utils/copy.json';
@@ -16,6 +16,9 @@ const getPageOptions = pageCount => {
 
 const PaginationControls = ({ renderedProducts, pageSize, changePageSize, start, changePageNumber }) => {
     const pageCount = renderedProducts.length/pageSize;
+    const hasPreviousPage = start >= pageSize;
+    const hasNextPage = (renderedProducts.length - start)/pageSize > 1;
+
     return (
         <div className={styles.paginationRow}>
             <span className={styles.paginationLeft}>
@@ -30,7 +33,9 @@ const PaginationControls = ({ renderedProducts, pageSize, changePageSize, start,
                 </select>
             </span>
             <span className={styles.paginationRight}>
-                <button onClick={() => changePageNumber((start/pageSize) - 1)}>Previous</button>
+                <button
+                    disabled={!hasPreviousPage}
+                    onClick={() => changePageNumber((start/pageSize) - 1)}>Previous</button>
                 <select
                     name="goToPage"
                     id="goToPage"
@@ -39,7 +44,9 @@ const PaginationControls = ({ renderedProducts, pageSize, changePageSize, start,
                 >
                     {getPageOptions(pageCount)}
                 </select>
-                <button onClick={() => changePageNumber((start/pageSize) + 1)}>Next</button>
+                <button
+                    disabled={!hasNextPage}
+                    onClick={() => changePageNumber((start/pageSize) + 1)}>Next</button>
             </span>
         </div>
     );

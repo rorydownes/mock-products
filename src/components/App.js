@@ -3,8 +3,7 @@ import ProductsContainer from './ProductsContainer';
 import PaginationControls from './PaginationControls';
 import Header from './Header';
 // import services from '../services';
-import { products } from "../services/mockData"
-import { PAGE_SIZES } from '../utils/constants';
+import { products } from "../services/mockData";
 
 import copy from '../utils/copy.json';
 import styles from './App.scss';
@@ -12,14 +11,9 @@ import styles from './App.scss';
 import { connect } from 'react-redux';
 import actions from '../redux/actionCreators';
 
-const initialState = props => ({
-    pageSize: PAGE_SIZES[0]
-});
-
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = initialState(props);
 
         this.handleCheckRow = this.handleCheckRow.bind(this);
         this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
@@ -47,16 +41,9 @@ class App extends Component {
     }
 
     render() {
-        console.log('App render', this.props);
-
         const {
             searchQuery,
         } = this.props;
-
-        const {
-            pageSize,
-            currentPage
-        } = this.state;
 
         return (
             <div className={styles.app}>

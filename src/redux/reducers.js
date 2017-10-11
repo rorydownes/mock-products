@@ -10,6 +10,8 @@ const initialState = {
     visibleProducts: [],
     start: 0,
     pageSize: PAGE_SIZES[0],
+    sortField: "",
+    sortDescending: true
 };
 
 const productState = () => ({
@@ -27,7 +29,7 @@ const reducer = (state = initialState, action) => {
                 return (products[cur] && products[cur].name && products[cur].price
                     && (matchesSearch(products[cur].name, action.query) || matchesSearch(products[cur].price, action.query)));
             });
-            return {...state, searchQuery: action.query, renderedProducts};
+            return {...state, searchQuery: action.query, renderedProducts, start: initialState.start};
 
         case actions.fetchProducts:
             let productIds = [];
@@ -45,12 +47,17 @@ const reducer = (state = initialState, action) => {
             return {...state, products: {...state.products, [action.productID]: {...product, isChecked: !product.isChecked}}};
 
         case actions.changePageSize:
-            return {...state, pageSize: action.pageSize, start: initialState.start};
+            return {...state, pageSize: parseInt(action.pageSize, 10), start: initialState.start};
 
         case actions.changePageNumber:
-            console.log('New State: ', {...state, start: action.pageNumber*state.pageSize});
             return {...state, start: action.pageNumber*state.pageSize};
 
+        case actions.changeSortField:
+            if (state.sortField === action.fieldName) {
+                return {...state, sortDescending: !state.sortDescending}
+            } else {
+                return {...state, sortField: action.fieldName}
+            }
         default:
             return state;
     }

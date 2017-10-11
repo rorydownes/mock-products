@@ -3,17 +3,31 @@ import { connect } from 'react-redux';
 import styles from './ProductsContainer.scss';
 import copy from '../utils/copy.json';
 
+import ArrowUp from 'react-icons/lib/md/arrow-drop-up';
+import ArrowDown from 'react-icons/lib/md/arrow-drop-down';
+
 import actions from '../redux/actionCreators';
 
 const editableField = (productID, fieldName, fieldValue, key, onChange) => {
     return (
         <input
             type="text"
+            className={styles.editableRowInput}
             name={`${key}-${fieldName}`}
             value={fieldValue}
             onChange={e => onChange(productID, 'name', e.target.value)}
         />
     );
+};
+
+const getSortArrow = (fieldName, sortField, isDescending) => {
+    if (!sortField) {
+        return <ArrowDown/>;
+    }
+
+    if (sortField === fieldName) {
+        return (isDescending) ? <ArrowDown/> : <ArrowUp/>;
+    }
 };
 
 class ProductsContainer extends Component {
@@ -38,13 +52,19 @@ class ProductsContainer extends Component {
         console.log(productID, fieldName, fieldValue);
     }
 
+    onSortBy(fieldName) {
+        this.props.sortBy(fieldName);
+    }
+
     render() {
         const {
             products,
             renderedProducts,
             handleCheckRow,
             start,
-            pageSize
+            pageSize,
+            sortField,
+            sortDescending
         } = this.props;
 
         const { headerRowChecked } = this.state;
@@ -89,17 +109,29 @@ class ProductsContainer extends Component {
 
         return (
             <div className={styles.container}>
-                <div className={styles.header}>
+                <div className={styles.headerRow}>
                     <input
                         type="checkbox"
                         className={styles.column5}
                         checked={headerRowChecked}
                         onChange={this.onCheckHeaderRow}
                     />
-                    <span className={styles.column35}>{copy.fieldHeaderName}</span>
-                    <span className={styles.column20}>{copy.fieldHeaderType}</span>
-                    <span className={styles.column20}>{copy.fieldHeaderPrice}</span>
-                    <span className={styles.column20}>{copy.fieldHeaderInventory}</span>
+                    <span className={styles.column35} onClick={this.onSortBy.bind(this, 'name')}>
+                        {copy.fieldHeaderName}
+                        {getSortArrow('name', sortField, sortDescending)}
+                    </span>
+                    <span className={styles.column20} onClick={this.onSortBy.bind(this, 'type')}>
+                        {copy.fieldHeaderType}
+                        {getSortArrow('type', sortField, sortDescending)}
+                    </span>
+                    <span className={styles.column20} onClick={this.onSortBy.bind(this, 'price')}>
+                        {copy.fieldHeaderPrice}
+                        {getSortArrow('price', sortField, sortDescending)}
+                    </span>
+                    <span className={styles.column20} onClick={this.onSortBy.bind(this, 'inventory')}>
+                        {copy.fieldHeaderInventory}
+                        {getSortArrow('inventory', sortField, sortDescending)}
+                    </span>
                 </div>
                 {productsList}
             </div>
@@ -109,11 +141,13 @@ class ProductsContainer extends Component {
 
 const mapDispatchToProps = actions;
 
-const mapStateToProps = state => ({
-    products: state.products,
-    renderedProducts: state.renderedProducts,
-    start: state.start,
-    pageSize: state.pageSize
+const mapStateToProps = ({products, renderedProducts, start, pageSize, sortField, sortDescending}) => ({
+    products,
+    renderedProducts,
+    start,
+    pageSize,
+    sortField,
+    sortDescending
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsContainer);

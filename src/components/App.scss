@@ -1,7 +1,4 @@
-$color-white: #FFF;
-$color-black: #333;
-$color-primary-btn: #157AFB;
-$color-secondary-btn: $color-white;
+@import '../utils/variables';
 
 body {
   background-color: $color-black;
@@ -12,6 +9,7 @@ body {
   width: 60%;
   background-color: $color-white;
   display: block;
+  padding: 40px;
 }
 
 .header {
@@ -23,23 +21,29 @@ body {
   float: right;
 }
 
-.actionButtons .btn {
-  margin: 0 10px;
+.actionButtons button {
+  margin: 0 5px;
 }
 
 %btn {
-  padding: 20px 30px;
+  padding: 12px 24px;
   background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  max-height: 50px;
 }
 
 .primaryBtn {
   @extend %btn;
+  color: $color-white;
   background-color: $color-primary-btn;
 }
 
 .secondaryBtn {
   @extend %btn;
   background-color: $color-secondary-btn;
+  border: 1px solid $color-gray;
 }
 
 .searchRow {

@@ -1,5 +1,14 @@
+@import '../utils/variables';
+
 .container {
   width: 100%;
+  margin-bottom: 10px;
+
+  div {
+    border-bottom: 1px solid $color-gray;
+    padding: 10px 0;
+    border-bottom: 1px solid $color-gray;
+  }
 }
 
 .column5 {
@@ -17,6 +26,14 @@
   width: 20%;
 }
 
+.headerRow {
+  cursor: pointer;
+}
+
 .productRow {
-  min-height: 100px;
+  min-height: 50px;
+}
+
+.editableRowInput {
+  max-width: 80%;
 }
